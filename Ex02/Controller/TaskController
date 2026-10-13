@@ -1,0 +1,32 @@
+package com.example.exsession02.Controller;
+
+import com.example.exsession02.Models.Entities.Task;
+import com.example.exsession02.Models.Repositories.TaskRepository;
+import com.example.exsession02.Models.Services.TaskSevices;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v2/tasks")
+public class TaskController {
+    private final TaskSevices taskSevices;
+    @GetMapping
+    public ResponseEntity<?> findAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(taskSevices.findAll());
+    }
+    @GetMapping("/search")
+    public ResponseEntity<List<Task>> findAllTasks(@RequestParam(defaultValue = "") String search) {
+        List<Task> tasks = taskSevices.findAll();
+        List<Task> result = tasks.stream().filter(task -> task.getTitle().toLowerCase().contains(search.toLowerCase())).collect(Collectors.toList());
+        return ResponseEntity.ok(result);
+    }
+}
