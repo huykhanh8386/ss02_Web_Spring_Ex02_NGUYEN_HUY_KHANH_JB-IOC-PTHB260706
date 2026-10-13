@@ -1,0 +1,54 @@
+package com.example.exsession02.Models.Repositories;
+
+import com.example.exsession02.Models.Entities.User;
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+@Repository
+public class UserRepository {
+    private List<User> users = new ArrayList<>(
+            Arrays.asList(
+                    new User(1, "nguyenvanan", "an@gmail.com", "ADMIN"),
+                    new User(2, "tranvanbinh", "binh@gmail.com", "USER"),
+                    new User(3, "lethuha", "ha@gmail.com", "USER")
+            )
+    );
+    public List<User> findAll() {
+        return users;
+    }
+    public List<User> findByUsernameContainingIgnoreCase(String username) {
+        return users.stream().filter(user -> user.getUsername().toLowerCase().contains(username.toLowerCase())).toList();
+    }
+    public User findById(int id) {
+        for (User user : users) {
+            if (user.getId() == id) {
+                return user;
+            }
+        }
+        return null;
+    }
+    public User save(User user) {
+        users.add(user);
+        return user;
+    }
+    public User save(int id, User newUser) {
+        User user = findById(id);
+        if (user == null) {
+            return null;
+        }
+        user.setUsername(newUser.getUsername());
+        user.setEmail(newUser.getEmail());
+        user.setRole(newUser.getRole());
+        return user;
+    }
+    public User deleteById(int id) {
+        User user = findById(id);
+        if (user == null) {
+            return null;
+        }
+        users.remove(user);
+        return user;
+    }
+}
