@@ -1,0 +1,55 @@
+package com.example.exsession02.Models.Repositories;
+import com.example.exsession02.Models.Entities.Task;
+import com.example.exsession02.Models.Repositories.TaskRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+@Repository
+public class TaskRepository {
+    private List<Task> tasks = new ArrayList<>(
+            Arrays.asList(
+                    new Task(1, "Học Java", "Ôn tập Java Core", "high", 1),
+                    new Task(2, "Học Spring Boot", "Tìm hiểu Spring Boot", "high", 1),
+                    new Task(3, "Làm bài tập", "Hoàn thành bài tập trên LMS", "medium", 2),
+                    new Task(4, "Học REST API", "Tìm hiểu RESTful API", "high", 2),
+                    new Task(5, "Test Postman", "Kiểm thử API bằng Postman", "medium", 3),
+                    new Task(6, "Học SQL", "Ôn tập câu lệnh SQL", "low", 1),
+                    new Task(7, "Làm Project", "Xây dựng project Spring Boot", "high", 3)
+            )
+    );
+    public List<Task> findAll() {
+        return tasks;
+    }
+    public List<Task> findByTitleContainingIgnoreCase(String name) {
+        return tasks.stream().filter(product -> product.getTitle().toLowerCase().contains(name.toLowerCase())).toList();
+    }
+    public Task findById(int id) {
+        for (Task task : tasks) {
+            if (task.getId() == id) {
+                return task;
+            }
+        }
+        return null;
+    }
+    public Task save(int id, Task newTask) {
+        Task task = findById(id);
+        if (task == null) {
+            return null;
+        }
+        task.setTitle(newTask.getTitle());
+        task.setDescription(newTask.getDescription());
+        task.setPriority(newTask.getPriority());
+        task.setAssigneeTo(newTask.getAssigneeTo());
+        return task;
+    }
+    public Task deleteById(int id) {
+        Task task = findById(id);
+        if (task == null) {
+            return null;
+        }
+        tasks.remove(task);
+        return task;
+    }
+}
