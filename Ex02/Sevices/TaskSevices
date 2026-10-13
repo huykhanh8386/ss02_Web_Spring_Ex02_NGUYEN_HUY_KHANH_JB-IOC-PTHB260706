@@ -1,0 +1,49 @@
+package com.example.exsession02.Models.Services;
+
+import com.example.exsession02.Models.Entities.Task;
+import com.example.exsession02.Models.Entities.User;
+import com.example.exsession02.Models.Repositories.TaskRepository;
+import com.example.exsession02.Models.Repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+@Service
+@RequiredArgsConstructor
+public class TaskSevices {
+    private final TaskRepository taskRepository;
+    public List<Task> findAll() {
+        return taskRepository.findAll();
+    }
+    public List<Task> searchTask(String search) {
+        return taskRepository.findByTitleContainingIgnoreCase(search);
+    }
+    public Task findById(int id) {
+        return taskRepository.findById(id);
+    }
+    public Task updateTask(int id, Task task) {
+        return taskRepository.save(id, task);
+    }
+    public Task deleteTask(int id) {
+        return taskRepository.deleteById(id);
+    }
+    public Task patchTask(int id, Task newTask) {
+        Task task = taskRepository.findById(id);
+        if (task == null) {
+            return null;
+        }
+        if (newTask.getTitle() != null) {
+            task.setTitle(newTask.getTitle());
+        }
+        if (newTask.getDescription() != null) {
+            task.setDescription(newTask.getDescription());
+        }
+        if (newTask.getPriority() != null) {
+            task.setPriority(newTask.getPriority());
+        }
+        if (newTask.getAssigneeTo() != 0) {
+            task.setAssigneeTo(newTask.getAssigneeTo());
+        }
+        return task;
+    }
+}
