@@ -1,0 +1,32 @@
+package com.example.exsession02.Models.Services;
+
+import com.example.exsession02.Models.Entities.User;
+import com.example.exsession02.Models.Repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor()
+public class UserServices {
+    private final UserRepository userRepository;
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+    public List<User> searchUser(String search) {
+        return userRepository.findByUsernameContainingIgnoreCase(search);
+    }
+    public User findUserById(int id) {
+        return userRepository.findById(id);
+    }
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
+    public User updateUser(int id, User user) {
+        return userRepository.save(id, user);
+    }
+    public User deleteUserById(int id) {
+        return userRepository.deleteById(id);
+    }
+}
