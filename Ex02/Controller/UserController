@@ -1,0 +1,52 @@
+package com.example.exsession02.Controller;
+
+import com.example.exsession02.Models.Entities.User;
+import com.example.exsession02.Models.Repositories.UserRepository;
+import com.example.exsession02.Models.Services.UserServices;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor()
+@RequestMapping("/api/users")
+public class UserController {
+    private final UserServices userServices;
+    @GetMapping
+    public ResponseEntity<?> findAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(userServices.findAll());
+    }
+    @GetMapping("/search")
+    public ResponseEntity<List<User>> findAll(@RequestParam(value = "search", defaultValue = "") String search) {
+        if (search.isEmpty()) {
+            return ResponseEntity.ok(userServices.findAll());}
+        return ResponseEntity.ok(userServices.searchUser(search));
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<User> findUserById(@PathVariable int id) {
+        User user = userServices.findUserById(id);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user);
+    }
+    @PostMapping
+    public ResponseEntity<?> createUser(
+            @RequestBody User user
+    ) {
+        if (user.getUsername() == null
+                || user.getUsername().isBlank()
+                || user.getEmail() == null
+                || user.getEmail().isBlank()
+                || user.getRole() == null
+                || user.getRole().isBlank()) {
+            return ResponseEntity.badRequest().body("Thông tin User không hợp lệ!");
+        }
+        User newUser = userServices.createUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+    }
+
+}
